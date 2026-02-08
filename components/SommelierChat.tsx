@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Wine, ChatMessage } from '../types';
 import { getSommelierResponse } from '../services/geminiService';
@@ -11,7 +10,14 @@ const SommelierChat: React.FC<SommelierChatProps> = ({ cellar }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [hasApiKey, setHasApiKey] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!process.env.API_KEY) {
+      setHasApiKey(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -45,6 +51,12 @@ const SommelierChat: React.FC<SommelierChatProps> = ({ cellar }) => {
           <p className="text-[10px] uppercase tracking-tighter text-gray-500 font-bold">Expert advice on call</p>
         </div>
       </div>
+
+      {!hasApiKey && (
+        <div className="bg-red-900/20 border-b border-red-900/50 p-3 text-xs text-red-400 text-center">
+          ⚠️ AI features require an API_KEY in Vercel.
+        </div>
+      )}
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 bg-[url('https://www.transparenttextures.com/patterns/dark-leather.png')]">
         {messages.length === 0 && (
@@ -108,7 +120,7 @@ const SommelierChat: React.FC<SommelierChatProps> = ({ cellar }) => {
           />
           <button 
             onClick={handleSend}
-            disabled={isLoading || !input.trim()}
+            disabled={isLoading || !input.trim() || !hasApiKey}
             className="bg-[#4a0e0e] text-[#c8a97e] px-4 rounded hover:bg-[#601212] transition-colors disabled:opacity-50"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

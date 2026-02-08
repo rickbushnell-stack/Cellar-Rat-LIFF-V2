@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { Wine, WineType } from '../types';
 import { analyzeLabel } from '../services/geminiService';
@@ -31,13 +30,29 @@ const WineForm: React.FC<WineFormProps> = ({ onSubmit, onCancel, initialData }) 
 
     setIsScanning(true);
     const reader = new FileReader();
-    reader.onloadend = async () => {
-      const base64 = (reader.result as string).split(',')[1];
-      const details = await analyzeLabel(base64);
-      if (details) {
-        setFormData(prev => ({ ...prev, ...details }));
-      }
+    
+    reader.onerror = () => {
+      alert("Error reading file. Please try again.");
       setIsScanning(false);
+    };
+
+    reader.onloadend = async () => {
+      try {
+        const base64 = (reader.result as string).split(',')[1];
+        const details = await analyzeLabel(base64);
+        if (details) {
+          setFormData(prev => ({ ...prev, ...details }));
+        } else {
+          alert("Could not extract details. Please try a clearer photo or enter manually.");
+        }
+      } catch (err: any) {
+        console.error(err);
+        alert(`Analysis failed: ${err.message || "Unknown error"}`);
+      } finally {
+        setIsScanning(false);
+        // Clear the input so the same file can be picked again
+        if (fileInputRef.current) fileInputRef.current.value = '';
+      }
     };
     reader.readAsDataURL(file);
   };
@@ -57,7 +72,12 @@ const WineForm: React.FC<WineFormProps> = ({ onSubmit, onCancel, initialData }) 
           disabled={isScanning}
           className="px-4 py-2 bg-[#4a0e0e] hover:bg-[#601212] transition-colors rounded text-sm font-semibold flex items-center gap-2"
         >
-          {isScanning ? 'Analyzing...' : (
+          {isScanning ? (
+            <span className="flex items-center gap-2">
+              <span className="w-3 h-3 border-2 border-[#c8a97e] border-t-transparent rounded-full animate-spin"></span>
+              Analyzing...
+            </span>
+          ) : (
             <>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />

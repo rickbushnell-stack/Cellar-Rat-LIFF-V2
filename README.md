@@ -1,12 +1,13 @@
 # Cellar Rat - Digital Sommelier (LIFF V2)
 
 *Status: Verified Production Configuration*
-*Updated: Feb 21, 2025 - 15:00 UTC*
+*Updated: Feb 21, 2025 - 15:15 UTC*
 
 ## ✅ Success Checklist
 - [x] **Endpoint URL**: `https://cellar-rat.vercel.app` (Verified correct in LINE Console)
 - [x] **LIFF ID**: `2008992355-xfKmuxNN` (Now hardcoded as fallback in `App.tsx`)
 - [x] **Vercel Routing**: Handled by `vercel.json` to prevent 404s.
+- [x] **Import Map**: Cleaned of version conflicts.
 
 ## 🧪 Testing instructions
 1. Open LINE app on your phone.
