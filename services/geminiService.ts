@@ -1,9 +1,6 @@
 import { GoogleGenAI, Type, GenerateContentResponse } from "@google/genai";
 import { Wine, ChatMessage } from "../types";
 
-/**
- * Clean AI response text to ensure it's valid JSON
- */
 const cleanJsonResponse = (text: string): string => {
   return text.replace(/```json/g, '').replace(/```/g, '').trim();
 };
@@ -14,22 +11,17 @@ export const getSommelierResponse = async (
   history: ChatMessage[]
 ): Promise<string> => {
   if (!process.env.API_KEY) {
-    return "Error: API_KEY is missing from environment variables. Please check your Vercel settings and redeploy.";
+    return "Configuration error: API_KEY is missing. Check your environment settings.";
   }
 
   try {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     
     const cellarContext = cellar.length > 0 
-      ? `The user's cellar contains: ${cellar.map(w => `${w.vintage} ${w.producer} ${w.name} (${w.varietal}, ${w.type}) x${w.quantity}`).join(', ')}.`
-      : "The user's cellar is currently empty.";
+      ? `Cellar: ${cellar.map(w => `${w.vintage} ${w.producer} ${w.name} (${w.varietal}) x${w.quantity}`).join(', ')}.`
+      : "Cellar is empty.";
 
-    const systemInstruction = `You are Cellar Rat, a world-class Master Sommelier. 
-      Your tone is sophisticated, knowledgeable, yet accessible. 
-      ${cellarContext}
-      Provide expert advice on wine pairings, aging potential, and recommendations from their existing collection. 
-      Always prioritize using their current inventory for pairing suggestions. 
-      Use Markdown for formatting.`;
+    const systemInstruction = `You are Cellar Rat, a Master Sommelier. Tone: sophisticated, knowledgeable. ${cellarContext} Use Markdown.`;
 
     const response: GenerateContentResponse = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
@@ -46,10 +38,10 @@ export const getSommelierResponse = async (
       },
     });
 
-    return response.text || "I apologize, I'm having trouble retrieving my tasting notes.";
+    return response.text || "I'm having trouble retrieving my tasting notes.";
   } catch (error: any) {
-    console.error("Gemini API Error:", error);
-    return `API connection failed: ${error.message || "Unknown error"}. Check if your API key has the correct permissions and that billing is active for your project.`;
+    console.error("Gemini Error:", error);
+    return `Connection issue: ${error.message || "Unknown error"}.`;
   }
 };
 
@@ -63,7 +55,7 @@ export const analyzeLabel = async (base64Image: string): Promise<Partial<Wine> |
       contents: {
         parts: [
           { inlineData: { data: base64Image, mimeType: 'image/jpeg' } },
-          { text: "Identify this wine label. Extract details including Name, Producer, Varietal, Vintage, Region, and Type (Red, White, Rosé, Sparkling, Dessert). Return ONLY a JSON object." }
+          { text: "Identify this wine label. Return a JSON object with: name, producer, varietal, vintage, region, type (Red, White, Rosé, Sparkling, Dessert)." }
         ]
       },
       config: {
