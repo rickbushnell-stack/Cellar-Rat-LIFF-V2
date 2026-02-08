@@ -57,8 +57,9 @@ const App: React.FC = () => {
         }
       } catch (err: any) {
         console.error("LIFF Init Error", err);
+        // "channel not found" usually means the ID exists but is invalid/wrong format
         const msg = err.message === "channel not found" 
-          ? "Invalid LIFF ID. Please ensure there are no extra spaces in your Vercel 'LIFF_ID' variable."
+          ? "Invalid LIFF ID. Please check for leading spaces or hidden characters in your Vercel Environment Variables."
           : err.message;
         
         setLiffError({
@@ -103,7 +104,6 @@ const App: React.FC = () => {
       setIsAdding(false);
     } catch (e) {
       console.error("Error adding wine: ", e);
-      alert("Failed to add wine to cloud.");
     }
   };
 
@@ -115,7 +115,6 @@ const App: React.FC = () => {
       setEditingWine(null);
     } catch (e) {
       console.error("Error updating wine: ", e);
-      alert("Failed to update wine.");
     }
   };
 
@@ -160,21 +159,12 @@ const App: React.FC = () => {
           </div>
           <h2 className="text-[#c8a97e] font-serif text-2xl mb-4">{liffError.title}</h2>
           <p className="text-gray-400 mb-8 leading-relaxed">{liffError.message}</p>
-          <div className="flex flex-col gap-3">
-            <button 
-              onClick={() => window.location.reload()} 
-              className="bg-[#c8a97e] text-black font-bold py-3 rounded-lg hover:bg-[#b8986d] transition-colors"
-            >
-              Try Again
-            </button>
-            <a 
-              href="https://developers.line.biz/console/" 
-              target="_blank" 
-              className="text-[#c8a97e] text-sm underline hover:text-white transition-colors"
-            >
-              Open LINE Developers Console
-            </a>
-          </div>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="w-full bg-[#c8a97e] text-black font-bold py-3 rounded-lg hover:bg-[#b8986d] transition-colors"
+          >
+            Refresh App
+          </button>
         </div>
       </div>
     );
