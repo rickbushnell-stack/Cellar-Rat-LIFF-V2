@@ -30,13 +30,24 @@ const App: React.FC = () => {
   const [editingWine, setEditingWine] = useState<Wine | null>(null);
   const [isSyncing, setIsSyncing] = useState(true);
   const [user, setUser] = useState<UserProfile | null>(null);
-  const [liffError, setLiffError] = useState<string | null>(null);
+  const [liffError, setLiffError] = useState<{title: string, message: string} | null>(null);
 
   // LIFF Initialization
   useEffect(() => {
     const initLiff = async () => {
+      const LIFF_ID = process.env.LIFF_ID || "";
+      
+      // Check for common setup mistakes
+      if (!LIFF_ID || LIFF_ID === "YOUR_LIFF_ID_HERE") {
+        setLiffError({
+          title: "Setup Required",
+          message: "The LIFF ID is missing. Please add 'LIFF_ID' to your Vercel Environment Variables."
+        });
+        return;
+      }
+
       try {
-        await liff.init({ liffId: process.env.LIFF_ID || "YOUR_LIFF_ID_HERE" });
+        await liff.init({ liffId: LIFF_ID });
         if (!liff.isLoggedIn()) {
           liff.login();
         } else {
@@ -45,7 +56,15 @@ const App: React.FC = () => {
         }
       } catch (err: any) {
         console.error("LIFF Init Error", err);
-        setLiffError(err.message);
+        // "channel not found" usually means the ID exists but is invalid/wrong
+        const msg = err.message === "channel not found" 
+          ? "Invalid LIFF ID. Please double-check the ID in your LINE Developers Console."
+          : err.message;
+        
+        setLiffError({
+          title: "Cellar Gate Locked",
+          message: msg
+        });
       }
     };
     initLiff();
@@ -132,11 +151,30 @@ const App: React.FC = () => {
 
   if (liffError) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-black p-8 text-center">
-        <div>
-          <h2 className="text-[#c8a97e] font-serif text-2xl mb-4">Cellar Gate Locked</h2>
-          <p className="text-gray-500 mb-6">Error: {liffError}</p>
-          <button onClick={() => window.location.reload()} className="bg-[#4a0e0e] text-[#c8a97e] px-6 py-2 rounded">Retry</button>
+      <div className="flex items-center justify-center min-h-screen bg-[#0f0c0c] p-8 text-center">
+        <div className="max-w-md w-full bg-[#1a1616] p-8 rounded-2xl border border-[#2d2424] shadow-2xl">
+          <div className="w-16 h-16 bg-[#4a0e0e] rounded-full flex items-center justify-center mx-auto mb-6 border border-[#c8a97e]">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-[#c8a97e]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m0 0v2m0-2h2m-2 0H10m4-6a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            </svg>
+          </div>
+          <h2 className="text-[#c8a97e] font-serif text-2xl mb-4">{liffError.title}</h2>
+          <p className="text-gray-400 mb-8 leading-relaxed">{liffError.message}</p>
+          <div className="flex flex-col gap-3">
+            <button 
+              onClick={() => window.location.reload()} 
+              className="bg-[#c8a97e] text-black font-bold py-3 rounded-lg hover:bg-[#b8986d] transition-colors"
+            >
+              Try Again
+            </button>
+            <a 
+              href="https://developers.line.biz/console/" 
+              target="_blank" 
+              className="text-[#c8a97e] text-sm underline hover:text-white transition-colors"
+            >
+              Open LINE Developers Console
+            </a>
+          </div>
         </div>
       </div>
     );
@@ -144,16 +182,19 @@ const App: React.FC = () => {
 
   if (!user) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-black">
-        <div className="w-12 h-12 border-4 border-[#c8a97e] border-t-transparent rounded-full animate-spin"></div>
+      <div className="flex items-center justify-center min-h-screen bg-[#0f0c0c]">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-[#c8a97e] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-[#c8a97e] font-serif animate-pulse text-lg">Decanting your cellar...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen pb-24 lg:pb-0 flex">
+    <div className="min-h-screen pb-24 lg:pb-0 flex bg-[#0f0c0c]">
       {/* Sidebar for Desktop */}
-      <aside className="fixed left-0 top-0 h-full w-64 bg-[#1a1616] border-r border-[#2d2424] hidden lg:flex flex-col p-8">
+      <aside className="fixed left-0 top-0 h-full w-64 bg-[#1a1616] border-r border-[#2d2424] hidden lg:flex flex-col p-8 z-50">
         <div className="flex items-center gap-3 mb-12">
           <div className="w-10 h-10 bg-[#4a0e0e] rounded-lg rotate-12 flex items-center justify-center border border-[#c8a97e]">
              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#c8a97e] -rotate-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">

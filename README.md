@@ -11,12 +11,13 @@ Your sophisticated digital sommelier and cellar management system.
 4. **Location**: Choose any location (nam5 is fine) and click Next.
 5. **Configure Rules**: Select **Start in Test Mode** and click Create.
 
-### Step 2: LINE Developers Console (Access)
-1. In your LINE console, click the **LIFF** tab (next to Basic Settings).
-2. Click **Add** to create a new LIFF app.
-3. **Endpoint URL**: `https://cellar-krmo33cf2-r3cbls-projects.vercel.app`
-4. **Scopes**: Check `openid` and `profile`.
-5. Once saved, copy the **LIFF ID** (it looks like `2008992355-abc123xy`).
+### Step 2: LINE Developers Console (The LIFF ID)
+1. Go to your [LINE Developers Console](https://developers.line.biz/console/).
+2. Select your provider and your **LINE Login** channel.
+3. Click the **LIFF** tab at the top.
+4. Click **Add** to create your app if you haven't yet.
+5. **CRITICAL**: Copy the **LIFF ID**. It should look like `2008992355-abc123xy`.
+   * *Note: Do NOT copy the Channel ID or Secret by mistake. Only the ID from the LIFF tab works.*
 
 ### Step 3: Vercel Environment Variables
 Add these to your project settings in Vercel. **Everything is ready for you to copy-paste now:**
@@ -24,7 +25,7 @@ Add these to your project settings in Vercel. **Everything is ready for you to c
 | Variable Name | Value |
 | :--- | :--- |
 | `API_KEY` | `AIzaSyDH6B7AmS2Hpw6flSiUvNLAXd6GGeUQHas` |
-| `LIFF_ID` | (Paste the ID from Step 2 here) |
+| `LIFF_ID` | (The specific ID you got in Step 2) |
 | `FIREBASE_API_KEY` | `AIzaSyAlSzIfTFQTNrrv9AHwRM6F1Ilc_WiIoRQ` |
 | `FIREBASE_AUTH_DOMAIN` | `cellar-rat.firebaseapp.com` |
 | `FIREBASE_PROJECT_ID` | `cellar-rat` |
