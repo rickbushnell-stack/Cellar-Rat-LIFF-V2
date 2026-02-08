@@ -13,8 +13,11 @@ export const getSommelierResponse = async (
   cellar: Wine[],
   history: ChatMessage[]
 ): Promise<string> => {
+  if (!process.env.API_KEY) {
+    return "Error: API_KEY is missing from environment variables. Please check your Vercel settings and redeploy.";
+  }
+
   try {
-    // Initializing with the system-provided API key
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     
     const cellarContext = cellar.length > 0 
@@ -25,8 +28,8 @@ export const getSommelierResponse = async (
       Your tone is sophisticated, knowledgeable, yet accessible. 
       ${cellarContext}
       Provide expert advice on wine pairings, aging potential, and recommendations from their existing collection. 
-      If asked about wine types (like red wines), give rich, descriptive answers that a collector would appreciate.
-      Always prioritize using their current inventory for pairing suggestions.`;
+      Always prioritize using their current inventory for pairing suggestions. 
+      Use Markdown for formatting.`;
 
     const response: GenerateContentResponse = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
@@ -39,28 +42,28 @@ export const getSommelierResponse = async (
       ],
       config: {
         systemInstruction,
-        temperature: 0.8,
+        temperature: 0.7,
       },
     });
 
-    return response.text || "I apologize, my tasting notes are a bit fuzzy. Could you repeat that?";
+    return response.text || "I apologize, I'm having trouble retrieving my tasting notes.";
   } catch (error: any) {
-    console.error("Gemini Sommelier API Error:", error);
-    // Explicitly returning error details helps diagnose configuration issues
-    return `The cellar door seems stuck. Error: ${error.message || "Unknown Connection Issue"}. Please verify your API_KEY is set in Vercel and you have redeployed.`;
+    console.error("Gemini API Error:", error);
+    return `API connection failed: ${error.message || "Unknown error"}. Check if your API key has the correct permissions and that billing is active for your project.`;
   }
 };
 
 export const analyzeLabel = async (base64Image: string): Promise<Partial<Wine> | null> => {
+  if (!process.env.API_KEY) throw new Error("API_KEY missing");
+
   try {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-    
     const response: GenerateContentResponse = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: {
         parts: [
           { inlineData: { data: base64Image, mimeType: 'image/jpeg' } },
-          { text: "Identify this wine label. Extract: Name, Producer, Varietal, Vintage, Region, and Type (Red, White, Rosé, Sparkling, Dessert). Return ONLY a JSON object." }
+          { text: "Identify this wine label. Extract details including Name, Producer, Varietal, Vintage, Region, and Type (Red, White, Rosé, Sparkling, Dessert). Return ONLY a JSON object." }
         ]
       },
       config: {
@@ -81,8 +84,7 @@ export const analyzeLabel = async (base64Image: string): Promise<Partial<Wine> |
     });
 
     if (response.text) {
-      const cleanedJson = cleanJsonResponse(response.text);
-      return JSON.parse(cleanedJson);
+      return JSON.parse(cleanJsonResponse(response.text));
     }
     return null;
   } catch (error: any) {
