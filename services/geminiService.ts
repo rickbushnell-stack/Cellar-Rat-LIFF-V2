@@ -7,7 +7,8 @@ export const getSommelierResponse = async (
   cellar: Wine[],
   history: ChatMessage[]
 ): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  // Initialize Gemini with the API key from environment variables directly
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const cellarContext = cellar.length > 0 
     ? `The user's cellar contains: ${cellar.map(w => `${w.vintage} ${w.producer} ${w.name} (${w.varietal}, ${w.type}) x${w.quantity}`).join(', ')}.`
@@ -36,6 +37,7 @@ export const getSommelierResponse = async (
       },
     });
 
+    // Directly accessing the .text property of the response
     return response.text || "I apologize, my tasting notes are a bit fuzzy. Could you repeat that?";
   } catch (error) {
     console.error("Gemini Error:", error);
@@ -44,7 +46,8 @@ export const getSommelierResponse = async (
 };
 
 export const analyzeLabel = async (base64Image: string): Promise<Partial<Wine> | null> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  // Initialize Gemini with the API key from environment variables directly
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   try {
     const response = await ai.models.generateContent({
@@ -71,6 +74,7 @@ export const analyzeLabel = async (base64Image: string): Promise<Partial<Wine> |
       }
     });
 
+    // Accessing .text property directly for the JSON output
     if (response.text) {
       return JSON.parse(response.text);
     }
