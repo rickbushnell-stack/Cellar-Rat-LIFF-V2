@@ -40,7 +40,7 @@ export const getSommelierResponse = async (
       model: 'gemini-3-flash-preview',
       contents: [
         ...history.map(msg => ({
-          role: msg.role,
+          role: msg.role === 'user' ? 'user' : 'model',
           parts: [{ text: msg.text }]
         })),
         { role: 'user', parts: [{ text: query }] }
@@ -54,8 +54,8 @@ export const getSommelierResponse = async (
     return response.text || "I apologize, my tasting notes are a bit fuzzy. Could you repeat that?";
   } catch (error: any) {
     console.error("Gemini Sommelier Error:", error);
-    if (error.message?.includes("API_KEY")) {
-      return "I need an API Key to function. Please check your Vercel settings.";
+    if (error.message?.includes("API_KEY") || error.status === 403) {
+      return "I need a valid API Key to function. Please check your Vercel Environment Variables.";
     }
     return "The cellar door seems stuck. Please check your connection and try again.";
   }
