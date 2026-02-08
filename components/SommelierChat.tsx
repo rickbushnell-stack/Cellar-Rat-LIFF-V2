@@ -18,19 +18,25 @@ const SommelierChat: React.FC<SommelierChatProps> = ({ cellar }) => {
     }
   }, [messages, isLoading]);
 
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+  const handleSend = async (textOverride?: string) => {
+    const textToSend = textOverride || input;
+    if (!textToSend.trim() || isLoading) return;
 
-    const userMsg: ChatMessage = { role: 'user', text: input, timestamp: Date.now() };
+    const userMsg: ChatMessage = { role: 'user', text: textToSend, timestamp: Date.now() };
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setIsLoading(true);
 
     try {
-      const response = await getSommelierResponse(input, cellar, messages);
+      const response = await getSommelierResponse(textToSend, cellar, messages);
       setMessages(prev => [...prev, { role: 'model', text: response, timestamp: Date.now() }]);
-    } catch (err) {
-      setMessages(prev => [...prev, { role: 'model', text: "The sommelier is away from the desk. Please check your connection and try again.", timestamp: Date.now() }]);
+    } catch (err: any) {
+      console.error("Chat Component Error:", err);
+      setMessages(prev => [...prev, { 
+        role: 'model', 
+        text: `The sommelier is having trouble with the connection. (${err.message || 'Check your API Key'}).`, 
+        timestamp: Date.now() 
+      }]);
     } finally {
       setIsLoading(false);
     }
@@ -57,13 +63,19 @@ const SommelierChat: React.FC<SommelierChatProps> = ({ cellar }) => {
             <p className="text-sm text-gray-500 max-w-xs mx-auto italic">"A meal without wine is like a day without sunshine." How may I assist your palate tonight?</p>
             <div className="mt-8 flex flex-wrap justify-center gap-2">
               <button 
-                onClick={() => setInput("What should I drink with roasted lamb tonight?")}
+                onClick={() => handleSend("What is a good way to describe red wines?")}
+                className="text-xs px-3 py-2 bg-[#231d1d] border border-[#3a3030] rounded-full hover:border-[#c8a97e] transition-colors"
+              >
+                Describe Reds
+              </button>
+              <button 
+                onClick={() => handleSend("What should I drink with roasted lamb tonight?")}
                 className="text-xs px-3 py-2 bg-[#231d1d] border border-[#3a3030] rounded-full hover:border-[#c8a97e] transition-colors"
               >
                 Pair with Lamb
               </button>
               <button 
-                onClick={() => setInput("Which wine in my cellar has the highest aging potential?")}
+                onClick={() => handleSend("Which wine in my cellar has the highest aging potential?")}
                 className="text-xs px-3 py-2 bg-[#231d1d] border border-[#3a3030] rounded-full hover:border-[#c8a97e] transition-colors"
               >
                 Aging Potential
@@ -77,7 +89,7 @@ const SommelierChat: React.FC<SommelierChatProps> = ({ cellar }) => {
             <div className={`max-w-[85%] p-3 rounded-lg text-sm leading-relaxed ${
               msg.role === 'user' 
                 ? 'bg-[#c8a97e] text-black rounded-br-none' 
-                : 'bg-[#231d1d] border border-[#3a3030] text-gray-200 rounded-bl-none'
+                : 'bg-[#231d1d] border border-[#3a3030] text-gray-200 rounded-bl-none shadow-lg'
             }`}>
               {msg.text}
             </div>
@@ -85,7 +97,7 @@ const SommelierChat: React.FC<SommelierChatProps> = ({ cellar }) => {
         ))}
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-[#231d1d] border border-[#3a3030] p-3 rounded-lg flex gap-1">
+            <div className="bg-[#231d1d] border border-[#3a3030] p-3 rounded-lg flex gap-1 shadow-lg">
               <span className="w-1.5 h-1.5 bg-[#c8a97e] rounded-full animate-bounce"></span>
               <span className="w-1.5 h-1.5 bg-[#c8a97e] rounded-full animate-bounce [animation-delay:0.2s]"></span>
               <span className="w-1.5 h-1.5 bg-[#c8a97e] rounded-full animate-bounce [animation-delay:0.4s]"></span>
@@ -98,16 +110,16 @@ const SommelierChat: React.FC<SommelierChatProps> = ({ cellar }) => {
         <div className="flex gap-2">
           <input 
             type="text"
-            className="flex-1 bg-[#1a1616] border border-[#3a3030] p-3 rounded focus:outline-none focus:border-[#c8a97e] text-sm"
+            className="flex-1 bg-[#1a1616] border border-[#3a3030] p-3 rounded focus:outline-none focus:border-[#c8a97e] text-sm text-[#fdfcf0]"
             placeholder="Ask your sommelier..."
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSend()}
           />
           <button 
-            onClick={handleSend}
+            onClick={() => handleSend()}
             disabled={isLoading || !input.trim()}
-            className="bg-[#4a0e0e] text-[#c8a97e] px-4 rounded hover:bg-[#601212] transition-colors disabled:opacity-50"
+            className="bg-[#4a0e0e] text-[#c8a97e] px-4 rounded hover:bg-[#601212] transition-colors disabled:opacity-50 shadow-md"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
