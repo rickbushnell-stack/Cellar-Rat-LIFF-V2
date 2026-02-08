@@ -35,9 +35,10 @@ const App: React.FC = () => {
   // LIFF Initialization
   useEffect(() => {
     const initLiff = async () => {
-      const LIFF_ID = process.env.LIFF_ID || "";
+      // Use .trim() to remove any sneaky spaces or newlines from Vercel variables
+      const rawId = process.env.LIFF_ID || "";
+      const LIFF_ID = rawId.trim();
       
-      // Check for common setup mistakes
       if (!LIFF_ID || LIFF_ID === "YOUR_LIFF_ID_HERE") {
         setLiffError({
           title: "Setup Required",
@@ -56,9 +57,8 @@ const App: React.FC = () => {
         }
       } catch (err: any) {
         console.error("LIFF Init Error", err);
-        // "channel not found" usually means the ID exists but is invalid/wrong
         const msg = err.message === "channel not found" 
-          ? "Invalid LIFF ID. Please double-check the ID in your LINE Developers Console."
+          ? "Invalid LIFF ID. Please ensure there are no extra spaces in your Vercel 'LIFF_ID' variable."
           : err.message;
         
         setLiffError({
