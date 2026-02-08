@@ -30,7 +30,7 @@ const SommelierChat: React.FC<SommelierChatProps> = ({ cellar }) => {
       const response = await getSommelierResponse(input, cellar, messages);
       setMessages(prev => [...prev, { role: 'model', text: response, timestamp: Date.now() }]);
     } catch (err) {
-      setMessages(prev => [...prev, { role: 'model', text: "I'm having trouble connecting to the cellar records. Please try again.", timestamp: Date.now() }]);
+      setMessages(prev => [...prev, { role: 'model', text: "The sommelier is away from the desk. Please check your connection and try again.", timestamp: Date.now() }]);
     } finally {
       setIsLoading(false);
     }
@@ -67,12 +67,6 @@ const SommelierChat: React.FC<SommelierChatProps> = ({ cellar }) => {
                 className="text-xs px-3 py-2 bg-[#231d1d] border border-[#3a3030] rounded-full hover:border-[#c8a97e] transition-colors"
               >
                 Aging Potential
-              </button>
-              <button 
-                onClick={() => setInput("Suggest a bottle for a celebration.")}
-                className="text-xs px-3 py-2 bg-[#231d1d] border border-[#3a3030] rounded-full hover:border-[#c8a97e] transition-colors"
-              >
-                Celebration Bottle
               </button>
             </div>
           </div>

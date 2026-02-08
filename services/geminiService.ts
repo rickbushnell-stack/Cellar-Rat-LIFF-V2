@@ -5,7 +5,6 @@ import { Wine, ChatMessage } from "../types";
  * Clean AI response text to ensure it's valid JSON
  */
 const cleanJsonResponse = (text: string): string => {
-  // Remove markdown code blocks if present (e.g., ```json ... ```)
   return text.replace(/```json/g, '').replace(/```/g, '').trim();
 };
 
@@ -52,7 +51,6 @@ export const getSommelierResponse = async (
 export const analyzeLabel = async (base64Image: string): Promise<Partial<Wine> | null> => {
   try {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
-    console.log("Starting label analysis with Gemini...");
     
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
@@ -71,3 +69,20 @@ export const analyzeLabel = async (base64Image: string): Promise<Partial<Wine> |
             producer: { type: Type.STRING },
             varietal: { type: Type.STRING },
             vintage: { type: Type.STRING },
+            region: { type: Type.STRING },
+            type: { type: Type.STRING, enum: ['Red', 'White', 'Rosé', 'Sparkling', 'Dessert'] },
+          },
+        }
+      }
+    });
+
+    if (response.text) {
+      const cleanedJson = cleanJsonResponse(response.text);
+      return JSON.parse(cleanedJson);
+    }
+    return null;
+  } catch (error: any) {
+    console.error("Label Analysis Error:", error);
+    throw error;
+  }
+};
