@@ -1,11 +1,11 @@
 
-# VintnerAI Setup Guide
+# Cellar Rat Setup Guide
 
 Follow these steps to deploy your Digital Sommelier to Vercel with a Firebase backend.
 
 ## 1. Firebase Setup
 1. Go to the [Firebase Console](https://console.firebase.google.com/).
-2. Create a new Project (e.g., "VintnerAI").
+2. Create a new Project (e.g., "Cellar Rat").
 3. In the sidebar, click **Firestore Database** and create a database in **Production Mode**.
 4. Set your security rules to allow read/write (initially for testing, later add Auth):
    ```
@@ -27,12 +27,12 @@ Follow these steps to deploy your Digital Sommelier to Vercel with a Firebase ba
    ```bash
    git init
    git add .
-   git commit -m "Initial VintnerAI cloud setup"
+   git commit -m "Initial Cellar Rat cloud setup"
    ```
-2. Create a new repository on GitHub.
+2. Create a new repository on GitHub: `https://github.com/rickbushnell-stack/Cellar-Rat-LIFF-V2`
 3. Link and push:
    ```bash
-   git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+   git remote add origin https://github.com/rickbushnell-stack/Cellar-Rat-LIFF-V2.git
    git branch -M main
    git push -u origin main
    ```
@@ -40,7 +40,7 @@ Follow these steps to deploy your Digital Sommelier to Vercel with a Firebase ba
 ## 3. Vercel Deployment
 1. Log in to [Vercel](https://vercel.com/).
 2. Click **Add New** -> **Project**.
-3. Import your GitHub repository.
+3. Import your GitHub repository: `Cellar-Rat-LIFF-V2`.
 4. **CRITICAL**: Before clicking Deploy, expand **Environment Variables**.
 5. Add the following keys from your Gemini and Firebase setups:
    - `API_KEY` (Your Google AI API Key)

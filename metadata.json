@@ -1,5 +1,5 @@
 {
-  "name": "VintnerAI: Your Digital Sommelier",
+  "name": "Cellar Rat: Your Digital Sommelier",
   "description": "A sophisticated wine cellar management application with a built-in AI sommelier to help you track inventory, discover pairings, and optimize your collection.",
   "requestFramePermissions": [
     "camera"

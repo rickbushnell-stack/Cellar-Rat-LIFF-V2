@@ -102,7 +102,7 @@ const App: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
           </div>
-          <h1 className="text-2xl font-serif text-[#c8a97e] tracking-tight">VintnerAI</h1>
+          <h1 className="text-2xl font-serif text-[#c8a97e] tracking-tight">Cellar Rat</h1>
         </div>
 
         <nav className="space-y-4">

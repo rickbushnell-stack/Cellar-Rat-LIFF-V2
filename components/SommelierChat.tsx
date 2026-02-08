@@ -41,7 +41,7 @@ const SommelierChat: React.FC<SommelierChatProps> = ({ cellar }) => {
           </svg>
         </div>
         <div>
-          <h3 className="font-serif text-[#c8a97e]">VintnerAI Sommelier</h3>
+          <h3 className="font-serif text-[#c8a97e]">Cellar Rat Sommelier</h3>
           <p className="text-[10px] uppercase tracking-tighter text-gray-500 font-bold">Expert advice on call</p>
         </div>
       </div>

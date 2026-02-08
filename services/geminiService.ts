@@ -13,7 +13,7 @@ export const getSommelierResponse = async (
     ? `The user's cellar contains: ${cellar.map(w => `${w.vintage} ${w.producer} ${w.name} (${w.varietal}, ${w.type}) x${w.quantity}`).join(', ')}.`
     : "The user's cellar is currently empty.";
 
-  const systemPrompt = `You are VintnerAI, a world-class Master Sommelier. 
+  const systemPrompt = `You are Cellar Rat, a world-class Master Sommelier. 
     Your tone is sophisticated, knowledgeable, yet accessible. 
     ${cellarContext}
     Provide expert advice on wine pairings, aging potential, and recommendations from their existing collection. 

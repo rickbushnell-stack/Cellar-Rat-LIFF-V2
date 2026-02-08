@@ -1,5 +1,5 @@
 
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 // These will be configured in your Vercel Project Settings
@@ -12,5 +12,8 @@ const firebaseConfig = {
   appId: process.env.FIREBASE_APP_ID
 };
 
-const app = initializeApp(firebaseConfig);
+// Initialize Firebase only if it hasn't been initialized already
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+
+// Export the Firestore database instance
 export const db = getFirestore(app);
