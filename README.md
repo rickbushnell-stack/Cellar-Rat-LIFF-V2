@@ -19,12 +19,12 @@ Your sophisticated digital sommelier and cellar management system.
 5. Once saved, copy the **LIFF ID** (it looks like `2008992355-abc123xy`).
 
 ### Step 3: Vercel Environment Variables
-Add these to your project settings in Vercel:
+Add these to your project settings in Vercel. **Everything is ready for you to copy-paste now:**
 
 | Variable Name | Value |
 | :--- | :--- |
-| `API_KEY` | (Your Google Gemini Key) |
-| `LIFF_ID` | (The ID you got from the LIFF tab) |
+| `API_KEY` | `AIzaSyDH6B7AmS2Hpw6flSiUvNLAXd6GGeUQHas` |
+| `LIFF_ID` | (Paste the ID from Step 2 here) |
 | `FIREBASE_API_KEY` | `AIzaSyAlSzIfTFQTNrrv9AHwRM6F1Ilc_WiIoRQ` |
 | `FIREBASE_AUTH_DOMAIN` | `cellar-rat.firebaseapp.com` |
 | `FIREBASE_PROJECT_ID` | `cellar-rat` |
