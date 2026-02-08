@@ -1,4 +1,6 @@
-// Force Sync Update: 2025-02-21
+// Force Sync Update: 2025-02-21 14:45
+console.log("Cellar Rat App Initializing...");
+
 import React, { useState, useEffect } from 'react';
 import { Wine } from './types';
 import WineForm from './components/WineForm';
@@ -35,7 +37,6 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const initLiff = async () => {
-      // Force trim to remove any hidden characters from Vercel
       const rawId = process.env.LIFF_ID || "";
       const sanitizedId = rawId.replace(/[\n\r\t]/g, "").trim();
       
@@ -148,8 +149,8 @@ const App: React.FC = () => {
 
   if (liffError) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#0f0c0c] p-8">
-        <div className="max-w-md w-full bg-[#1a1616] p-8 rounded-2xl border border-[#2d2424] text-center">
+      <div className="flex items-center justify-center min-h-screen bg-[#0f0c0c] p-8 text-center">
+        <div className="max-w-md w-full bg-[#1a1616] p-8 rounded-2xl border border-[#2d2424]">
           <h2 className="text-[#c8a97e] font-serif text-2xl mb-4">{liffError.title}</h2>
           <p className="text-gray-400 mb-8">{liffError.message}</p>
           <button onClick={() => window.location.reload()} className="w-full bg-[#c8a97e] text-black font-bold py-3 rounded-lg">Retry Connection</button>
@@ -206,7 +207,7 @@ const App: React.FC = () => {
         {activeTab === 'inventory' && (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {cellar.map(wine => (
-              <div key={wine.id} className="bg-[#1a1616] border border-[#2d2424] rounded-xl p-5 hover:border-[#c8a97e] transition-colors">
+              <div key={wine.id} className="bg-[#1a1616] border border-[#2d2424] rounded-xl p-5 hover:border-[#c8a97e] transition-colors shadow-xl">
                 <div className="flex justify-between mb-2">
                   <span className="text-[10px] font-bold text-[#c8a97e]">{wine.vintage}</span>
                   <div className="flex gap-3">
@@ -218,11 +219,11 @@ const App: React.FC = () => {
                 <p className="text-gray-400 text-sm mb-4">{wine.name}</p>
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-3">
-                    <button onClick={() => adjustQuantity(wine.id, -1)} className="w-8 h-8 rounded border border-gray-700">-</button>
-                    <span className="font-bold">{wine.quantity}</span>
-                    <button onClick={() => adjustQuantity(wine.id, 1)} className="w-8 h-8 rounded border border-gray-700">+</button>
+                    <button onClick={() => adjustQuantity(wine.id, -1)} className="w-8 h-8 rounded border border-gray-700 flex items-center justify-center hover:bg-gray-800 transition-colors">-</button>
+                    <span className="font-bold min-w-[1rem] text-center">{wine.quantity}</span>
+                    <button onClick={() => adjustQuantity(wine.id, 1)} className="w-8 h-8 rounded border border-gray-700 flex items-center justify-center hover:bg-gray-800 transition-colors">+</button>
                   </div>
-                  <span className="text-[#c8a97e] font-serif">${((wine.valuation || 0) * wine.quantity).toLocaleString()}</span>
+                  <span className="text-[#c8a97e] font-serif text-lg">${((wine.valuation || 0) * wine.quantity).toLocaleString()}</span>
                 </div>
               </div>
             ))}
@@ -231,10 +232,16 @@ const App: React.FC = () => {
         {activeTab === 'sommelier' && <SommelierChat cellar={cellar} />}
       </main>
 
-      <nav className="lg:hidden fixed bottom-0 left-0 w-full bg-[#1a1616] border-t border-[#2d2424] flex justify-around p-4 z-40">
-        <button onClick={() => setActiveTab('dashboard')} className={activeTab === 'dashboard' ? 'text-[#c8a97e]' : 'text-gray-500'}>Stats</button>
-        <button onClick={() => setActiveTab('inventory')} className={activeTab === 'inventory' ? 'text-[#c8a97e]' : 'text-gray-500'}>Cellar</button>
-        <button onClick={() => setActiveTab('sommelier')} className={activeTab === 'sommelier' ? 'text-[#c8a97e]' : 'text-gray-500'}>Somm</button>
+      <nav className="lg:hidden fixed bottom-0 left-0 w-full bg-[#1a1616] border-t border-[#2d2424] flex justify-around p-4 z-40 backdrop-blur-md">
+        <button onClick={() => setActiveTab('dashboard')} className={`flex flex-col items-center gap-1 ${activeTab === 'dashboard' ? 'text-[#c8a97e]' : 'text-gray-500'}`}>
+          <span className="text-[10px] uppercase font-bold">Stats</span>
+        </button>
+        <button onClick={() => setActiveTab('inventory')} className={`flex flex-col items-center gap-1 ${activeTab === 'inventory' ? 'text-[#c8a97e]' : 'text-gray-500'}`}>
+          <span className="text-[10px] uppercase font-bold">Cellar</span>
+        </button>
+        <button onClick={() => setActiveTab('sommelier')} className={`flex flex-col items-center gap-1 ${activeTab === 'sommelier' ? 'text-[#c8a97e]' : 'text-gray-500'}`}>
+          <span className="text-[10px] uppercase font-bold">Somm</span>
+        </button>
       </nav>
     </div>
   );

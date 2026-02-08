@@ -13,6 +13,7 @@
             background-color: #0f0c0c;
             color: #fdfcf0;
             overscroll-behavior-y: contain;
+            margin: 0;
         }
         .font-serif {
             font-family: 'Playfair Display', serif;
@@ -27,11 +28,11 @@
             background: #4a0e0e;
             border-radius: 3px;
         }
-        .min-h-screen {
+        #root {
             min-height: 100dvh;
         }
     </style>
-<script type="importmap">
+    <script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@19.0.0",
@@ -50,5 +51,7 @@
 </head>
 <body>
     <div id="root"></div>
+    <!-- Entry point for the application code -->
+    <script type="module" src="./index.tsx"></script>
 </body>
 </html>
