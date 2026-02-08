@@ -2,40 +2,39 @@
 
 Your sophisticated digital sommelier and cellar management system.
 
-**Live Deployment:** [cellar-krmo33cf2-r3cbls-projects.vercel.app](https://cellar-krmo33cf2-r3cbls-projects.vercel.app)
-**Repository:** [github.com/rickbushnell-stack/Cellar-Rat-LIFF-V2](https://github.com/rickbushnell-stack/Cellar-Rat-LIFF-V2)
+## 🚀 Final Integration Checklist for Rick
 
-## 1. Firebase Setup
-1. Go to the [Firebase Console](https://console.firebase.google.com/).
-2. Create a Project named "Cellar Rat".
-3. Initialize **Firestore Database** in Production Mode.
-4. Use these rules (allow public access initially for testing):
-   ```
-   rules_version = '2';
-   service cloud.firestore {
-     match /databases/{database}/documents {
-       match /{document=**} {
-         allow read, write: if true;
-       }
-     }
-   }
-   ```
-5. Register a Web App in Firebase Settings to get your config object.
+### Step 1: Firebase Console (Database Setup)
+1. Go to the [Firestore Section of cellar-rat](https://console.firebase.google.com/project/cellar-rat/firestore).
+2. Click **Create Database**.
+3. **Select Edition**: Choose **Standard Edition** and click Next.
+4. **Location**: Choose any location (nam5 is fine) and click Next.
+5. **Configure Rules**: Select **Start in Test Mode** and click Create.
 
-## 2. Vercel Configuration
-In your Vercel project (`prj_935TX5LLO10q7eFuYSB6Pu61dmbO`), add these Environment Variables:
-- `API_KEY`: Your Gemini API Key
-- `FIREBASE_API_KEY`: (from your Firebase config)
-- `FIREBASE_AUTH_DOMAIN`: (from your Firebase config)
-- `FIREBASE_PROJECT_ID`: (from your Firebase config)
-- `FIREBASE_STORAGE_BUCKET`: (from your Firebase config)
-- `FIREBASE_MESSAGING_SENDER_ID`: (from your Firebase config)
-- `FIREBASE_APP_ID`: (from your Firebase config)
+### Step 2: LINE Developers Console (Access)
+1. In your LINE console, click the **LIFF** tab (next to Basic Settings).
+2. Click **Add** to create a new LIFF app.
+3. **Endpoint URL**: `https://cellar-krmo33cf2-r3cbls-projects.vercel.app`
+4. **Scopes**: Check `openid` and `profile`.
+5. Once saved, copy the **LIFF ID** (it looks like `2008992355-abc123xy`).
 
-## 3. Deployment
-Every time you push to the `main` branch of your GitHub repo, Vercel will automatically update the live site.
-```bash
-git add .
-git commit -m "Update Firebase and branding"
-git push origin main
-```
+### Step 3: Vercel Environment Variables
+Add these to your project settings in Vercel:
+
+| Variable Name | Value |
+| :--- | :--- |
+| `API_KEY` | (Your Google Gemini Key) |
+| `LIFF_ID` | (The ID you got from the LIFF tab) |
+| `FIREBASE_API_KEY` | `AIzaSyAlSzIfTFQTNrrv9AHwRM6F1Ilc_WiIoRQ` |
+| `FIREBASE_AUTH_DOMAIN` | `cellar-rat.firebaseapp.com` |
+| `FIREBASE_PROJECT_ID` | `cellar-rat` |
+| `FIREBASE_STORAGE_BUCKET` | `cellar-rat.firebasestorage.app` |
+| `FIREBASE_MESSAGING_SENDER_ID` | `724887154017` |
+| `FIREBASE_APP_ID` | `1:724887154017:web:e30204651b954d3eea6920` |
+
+---
+
+## 🍇 How to use
+1. Open the URL on your phone or in LINE.
+2. Log in with your LINE account.
+3. Your wine collection is now synced to your private cloud profile!
