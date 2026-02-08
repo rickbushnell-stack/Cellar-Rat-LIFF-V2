@@ -14,7 +14,7 @@ export const getSommelierResponse = async (
   history: ChatMessage[]
 ): Promise<string> => {
   try {
-    // Standard initialization using injected API_KEY
+    // Initializing with the system-provided API key
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     
     const cellarContext = cellar.length > 0 
@@ -46,8 +46,8 @@ export const getSommelierResponse = async (
     return response.text || "I apologize, my tasting notes are a bit fuzzy. Could you repeat that?";
   } catch (error: any) {
     console.error("Gemini Sommelier API Error:", error);
-    // Explicitly returning error details helps diagnose configuration issues in Vercel
-    return `The cellar door seems stuck. Error: ${error.message || "Unknown Connection Issue"}. Please ensure your API_KEY is correctly set in Vercel and that you have redeployed.`;
+    // Explicitly returning error details helps diagnose configuration issues
+    return `The cellar door seems stuck. Error: ${error.message || "Unknown Connection Issue"}. Please verify your API_KEY is set in Vercel and you have redeployed.`;
   }
 };
 
