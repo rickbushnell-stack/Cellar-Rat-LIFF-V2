@@ -1,5 +1,5 @@
-import { initializeApp, getApp, getApps } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { initializeApp, getApp, getApps, FirebaseApp } from "firebase/app";
+import { getFirestore, Firestore } from "firebase/firestore";
 
 const getEnv = (key: string) => (process.env[key] || "").trim();
 
@@ -12,13 +12,21 @@ const firebaseConfig = {
   appId: getEnv('FIREBASE_APP_ID')
 };
 
-// Initialize Firebase once and export Firestore
-let app;
+let app: FirebaseApp | undefined;
+let dbInstance: Firestore | undefined;
+
 try {
-  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-  console.log("Firebase initialized successfully");
+  // Only attempt initialization if essential config is present
+  if (firebaseConfig.apiKey && firebaseConfig.projectId) {
+    app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+    dbInstance = getFirestore(app);
+    console.log("Firebase & Firestore connected successfully.");
+  } else {
+    console.warn("Firebase configuration missing. Database features will be unavailable.");
+  }
 } catch (error) {
-  console.error("Firebase initialization error:", error);
+  console.error("Firebase startup error:", error);
 }
 
-export const db = getFirestore(app!);
+// Export the db instance. Components should handle cases where db is undefined.
+export const db = dbInstance as Firestore;
