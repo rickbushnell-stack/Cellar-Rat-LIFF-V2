@@ -12,5 +12,13 @@ const firebaseConfig = {
   appId: getEnv('FIREBASE_APP_ID')
 };
 
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-export const db = getFirestore(app);
+// Initialize Firebase once and export Firestore
+let app;
+try {
+  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+  console.log("Firebase initialized successfully");
+} catch (error) {
+  console.error("Firebase initialization error:", error);
+}
+
+export const db = getFirestore(app!);

@@ -32,7 +32,7 @@ const WineForm: React.FC<WineFormProps> = ({ onSubmit, onCancel, initialData }) 
     const reader = new FileReader();
     
     reader.onerror = () => {
-      alert("Error reading file. Please try again.");
+      alert("Error reading file.");
       setIsScanning(false);
     };
 
@@ -43,14 +43,13 @@ const WineForm: React.FC<WineFormProps> = ({ onSubmit, onCancel, initialData }) 
         if (details) {
           setFormData(prev => ({ ...prev, ...details }));
         } else {
-          alert("Could not extract details. Please try a clearer photo or enter manually.");
+          alert("Could not extract details. Please enter manually.");
         }
       } catch (err: any) {
         console.error(err);
         alert(`Analysis failed: ${err.message || "Unknown error"}`);
       } finally {
         setIsScanning(false);
-        // Clear the input so the same file can be picked again
         if (fileInputRef.current) fileInputRef.current.value = '';
       }
     };
@@ -95,7 +94,7 @@ const WineForm: React.FC<WineFormProps> = ({ onSubmit, onCancel, initialData }) 
             <label className="text-xs uppercase tracking-wider text-gray-500 font-bold">Wine Name</label>
             <input 
               required
-              className="bg-[#231d1d] border border-[#3a3030] p-3 rounded focus:outline-none focus:border-[#c8a97e] transition-colors"
+              className="bg-[#231d1d] border border-[#3a3030] p-3 rounded focus:outline-none focus:border-[#c8a97e] transition-colors text-[#fdfcf0]"
               value={formData.name}
               onChange={e => setFormData({ ...formData, name: e.target.value })}
             />
@@ -104,7 +103,7 @@ const WineForm: React.FC<WineFormProps> = ({ onSubmit, onCancel, initialData }) 
             <label className="text-xs uppercase tracking-wider text-gray-500 font-bold">Producer</label>
             <input 
               required
-              className="bg-[#231d1d] border border-[#3a3030] p-3 rounded focus:outline-none focus:border-[#c8a97e] transition-colors"
+              className="bg-[#231d1d] border border-[#3a3030] p-3 rounded focus:outline-none focus:border-[#c8a97e] transition-colors text-[#fdfcf0]"
               value={formData.producer}
               onChange={e => setFormData({ ...formData, producer: e.target.value })}
             />
@@ -112,7 +111,7 @@ const WineForm: React.FC<WineFormProps> = ({ onSubmit, onCancel, initialData }) 
           <div className="flex flex-col gap-1">
             <label className="text-xs uppercase tracking-wider text-gray-500 font-bold">Varietal / Blend</label>
             <input 
-              className="bg-[#231d1d] border border-[#3a3030] p-3 rounded focus:outline-none focus:border-[#c8a97e] transition-colors"
+              className="bg-[#231d1d] border border-[#3a3030] p-3 rounded focus:outline-none focus:border-[#c8a97e] transition-colors text-[#fdfcf0]"
               value={formData.varietal}
               onChange={e => setFormData({ ...formData, varietal: e.target.value })}
             />
@@ -120,7 +119,7 @@ const WineForm: React.FC<WineFormProps> = ({ onSubmit, onCancel, initialData }) 
           <div className="flex flex-col gap-1">
             <label className="text-xs uppercase tracking-wider text-gray-500 font-bold">Vintage</label>
             <input 
-              className="bg-[#231d1d] border border-[#3a3030] p-3 rounded focus:outline-none focus:border-[#c8a97e] transition-colors"
+              className="bg-[#231d1d] border border-[#3a3030] p-3 rounded focus:outline-none focus:border-[#c8a97e] transition-colors text-[#fdfcf0]"
               value={formData.vintage}
               onChange={e => setFormData({ ...formData, vintage: e.target.value })}
             />
@@ -128,7 +127,7 @@ const WineForm: React.FC<WineFormProps> = ({ onSubmit, onCancel, initialData }) 
           <div className="flex flex-col gap-1">
             <label className="text-xs uppercase tracking-wider text-gray-500 font-bold">Region</label>
             <input 
-              className="bg-[#231d1d] border border-[#3a3030] p-3 rounded focus:outline-none focus:border-[#c8a97e] transition-colors"
+              className="bg-[#231d1d] border border-[#3a3030] p-3 rounded focus:outline-none focus:border-[#c8a97e] transition-colors text-[#fdfcf0]"
               value={formData.region}
               onChange={e => setFormData({ ...formData, region: e.target.value })}
             />
@@ -136,7 +135,7 @@ const WineForm: React.FC<WineFormProps> = ({ onSubmit, onCancel, initialData }) 
           <div className="flex flex-col gap-1">
             <label className="text-xs uppercase tracking-wider text-gray-500 font-bold">Type</label>
             <select 
-              className="bg-[#231d1d] border border-[#3a3030] p-3 rounded focus:outline-none focus:border-[#c8a97e] transition-colors"
+              className="bg-[#231d1d] border border-[#3a3030] p-3 rounded focus:outline-none focus:border-[#c8a97e] transition-colors text-[#fdfcf0]"
               value={formData.type}
               onChange={e => setFormData({ ...formData, type: e.target.value as WineType })}
             >
@@ -148,20 +147,20 @@ const WineForm: React.FC<WineFormProps> = ({ onSubmit, onCancel, initialData }) 
             </select>
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs uppercase tracking-wider text-gray-500 font-bold">Quantity (Bottles)</label>
+            <label className="text-xs uppercase tracking-wider text-gray-500 font-bold">Quantity</label>
             <input 
               type="number"
               min="1"
-              className="bg-[#231d1d] border border-[#3a3030] p-3 rounded focus:outline-none focus:border-[#c8a97e] transition-colors"
+              className="bg-[#231d1d] border border-[#3a3030] p-3 rounded focus:outline-none focus:border-[#c8a97e] transition-colors text-[#fdfcf0]"
               value={formData.quantity}
               onChange={e => setFormData({ ...formData, quantity: parseInt(e.target.value) || 0 })}
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs uppercase tracking-wider text-gray-500 font-bold">Valuation (Est. $/btl)</label>
+            <label className="text-xs uppercase tracking-wider text-gray-500 font-bold">Valuation ($/btl)</label>
             <input 
               type="number"
-              className="bg-[#231d1d] border border-[#3a3030] p-3 rounded focus:outline-none focus:border-[#c8a97e] transition-colors"
+              className="bg-[#231d1d] border border-[#3a3030] p-3 rounded focus:outline-none focus:border-[#c8a97e] transition-colors text-[#fdfcf0]"
               value={formData.valuation}
               onChange={e => setFormData({ ...formData, valuation: parseFloat(e.target.value) || 0 })}
             />
@@ -169,9 +168,9 @@ const WineForm: React.FC<WineFormProps> = ({ onSubmit, onCancel, initialData }) 
         </div>
 
         <div className="flex flex-col gap-1">
-          <label className="text-xs uppercase tracking-wider text-gray-500 font-bold">Tasting Notes / Cellar Location</label>
+          <label className="text-xs uppercase tracking-wider text-gray-500 font-bold">Notes</label>
           <textarea 
-            className="bg-[#231d1d] border border-[#3a3030] p-3 rounded h-24 focus:outline-none focus:border-[#c8a97e] transition-colors"
+            className="bg-[#231d1d] border border-[#3a3030] p-3 rounded h-24 focus:outline-none focus:border-[#c8a97e] transition-colors text-[#fdfcf0]"
             value={formData.notes}
             onChange={e => setFormData({ ...formData, notes: e.target.value })}
           />

@@ -11,17 +11,17 @@ export const getSommelierResponse = async (
   history: ChatMessage[]
 ): Promise<string> => {
   if (!process.env.API_KEY) {
-    return "Configuration error: API_KEY is missing. Check your environment settings.";
+    return "Sommelier Offline: API_KEY is not configured in environment variables.";
   }
 
   try {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     
     const cellarContext = cellar.length > 0 
-      ? `Cellar: ${cellar.map(w => `${w.vintage} ${w.producer} ${w.name} (${w.varietal}) x${w.quantity}`).join(', ')}.`
-      : "Cellar is empty.";
+      ? `Cellar Content: ${cellar.map(w => `${w.vintage} ${w.producer} ${w.name} x${w.quantity}`).join(', ')}.`
+      : "The cellar is currently empty.";
 
-    const systemInstruction = `You are Cellar Rat, a Master Sommelier. Tone: sophisticated, knowledgeable. ${cellarContext} Use Markdown.`;
+    const systemInstruction = `You are 'Cellar Rat', an elite Master Sommelier. Tone: Knowledgeable, refined, helpful. Context: ${cellarContext}. Provide expert wine advice.`;
 
     const response: GenerateContentResponse = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
@@ -38,15 +38,17 @@ export const getSommelierResponse = async (
       },
     });
 
-    return response.text || "I'm having trouble retrieving my tasting notes.";
+    return response.text || "I'm sorry, I couldn't process that request.";
   } catch (error: any) {
-    console.error("Gemini Error:", error);
-    return `Connection issue: ${error.message || "Unknown error"}.`;
+    console.error("Gemini Chat Error:", error);
+    return `Connection Error: ${error.message}`;
   }
 };
 
 export const analyzeLabel = async (base64Image: string): Promise<Partial<Wine> | null> => {
-  if (!process.env.API_KEY) throw new Error("API_KEY missing");
+  if (!process.env.API_KEY) {
+    throw new Error("Missing API_KEY. Please set it in your environment variables.");
+  }
 
   try {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -55,7 +57,7 @@ export const analyzeLabel = async (base64Image: string): Promise<Partial<Wine> |
       contents: {
         parts: [
           { inlineData: { data: base64Image, mimeType: 'image/jpeg' } },
-          { text: "Identify this wine label. Return a JSON object with: name, producer, varietal, vintage, region, type (Red, White, Rosé, Sparkling, Dessert)." }
+          { text: "Identify this wine label. Extract name, producer, varietal, vintage, region, and type (Red, White, Rosé, Sparkling, Dessert). Return valid JSON." }
         ]
       },
       config: {
